@@ -34,3 +34,17 @@ def simular_mov(pieza, mov, tablero, juego, salto):
         tablero.eliminar(salto)
 
     return tablero
+
+def obtener_todos_movimientos(tablero, color, juego):
+    movimientos = []
+
+    for pieza in tablero.obtener_todas_piezas(color):
+        mov_valido = tablero.obtener_mov_validos(pieza)
+        for mov, salto in mov_valido.items():
+            
+            tablero_temp = deepcopy(tablero)
+            pieza_temp = tablero_temp.obtener_pieza(pieza.fila, pieza.columna)
+            nuevo_tablero = simular_mov(pieza_temp, mov, tablero_temp, juego, salto)
+            movimientos.append(nuevo_tablero)
+    
+    return movimientos
