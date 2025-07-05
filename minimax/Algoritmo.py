@@ -48,3 +48,11 @@ def obtener_todos_movimientos(tablero, color, juego):
             movimientos.append(nuevo_tablero)
     
     return movimientos
+
+def dibujar_movimientos(juego, tablero, pieza):
+    mov_validos = tablero.obtener_todos_movimientos(pieza)
+    tablero.dibujar(juego.ventana)
+    pygame.draw.circle(juego.ventana, (0,255,0), (pieza.x, pieza.y), 50, 5)
+    juego.dibujar_mov_validos(mov_validos.keys())
+    pygame.display.update()
+    pygame.time.delay(5000)
