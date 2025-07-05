@@ -62,6 +62,24 @@ def pantalla_ganaste():
                 pygame.quit()
                 exit()
             boton_exit.manejar_evento(evento)
+        
+def pantalla_perdiste():
+
+    def boton_exit_evento():
+        pygame.quit()
+
+    boton_exit = Boton("assets/exit_button.png", (ANCHO_P_VENTANA // 2, 510), boton_exit_evento)
+
+    while True:
+        VENTANA.blit(FONDO_PANTALLA_GAME_OVER, (0, 0))
+        boton_exit.dibujar(VENTANA)
+        pygame.display.flip()
+
+        for evento in pygame.event.get():
+            if evento.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+            boton_exit.manejar_evento(evento)
 
 def main():
     juego_iniciado = [False]
