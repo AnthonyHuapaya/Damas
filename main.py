@@ -81,6 +81,48 @@ def pantalla_perdiste():
                 exit()
             boton_exit.manejar_evento(evento)
 
+def iniciar_partida(juego_iniciado):
+    reloj = pygame.time.Clock()
+    juego = Juego(VENTANA)
+    prof = 2
+
+    def boton_back_evento():
+        juego_iniciado[0] = False
+
+    boton_back = Boton("assets/back_button.png", (ANCHO_P + 140, 670), boton_back_evento, (193, 70))
+
+    while juego_iniciado[0]:
+        reloj.tick(FPS)
+        
+        if juego.turno == BLANCO:
+            valor, nuevo_tablero = minimax(juego.obtener_tablero(), prof, BLANCO, juego)
+            juego.mov_ia(nuevo_tablero)
+
+        if juego.ganador() != None:
+            print(juego.ganador())
+            if juego.ganador == BLANCO:
+                pantalla_ganaste()
+            else:
+                pantalla_perdiste()
+            juego_iniciado[0] = False
+
+        for evento in pygame.event.get():
+            if evento.type == pygame.QUIT:
+                juego_iniciado[0] = False
+            
+            if evento.type == pygame.MOUSEBUTTONDOWN:
+                pos = pygame.mouse.get_pos()
+                x, y = pos
+                if x < 720:
+                    fila, columna = obtener_fila_columna_mouse(pos)
+                    juego.seleccionar(fila, columna)
+
+            boton_back.manejar_evento(evento)
+
+        juego.actualizar()
+    
+    # pygame.quit()
+
 def main():
     juego_iniciado = [False]
     programa_levantado = True
