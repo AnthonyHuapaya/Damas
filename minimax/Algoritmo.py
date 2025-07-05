@@ -27,3 +27,10 @@ def minimax(posicion, prof, jugador_max, juego):
             if minEval == evaluacion:
                 mejor_mov = mov
         return minEval, mejor_mov
+    
+def simular_mov(pieza, mov, tablero, juego, salto):
+    tablero.mover(pieza, mov[0], mov[1])
+    if salto:
+        tablero.eliminar(salto)
+
+    return tablero
