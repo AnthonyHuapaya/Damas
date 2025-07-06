@@ -103,7 +103,7 @@ def iniciar_partida(juego_iniciado):
 
         if juego.ganador() != None:
             print(juego.ganador())
-            if juego.ganador == BLANCO:
+            if juego.ganador() == NEGRO:
                 pantalla_ganaste()
             else:
                 pantalla_perdiste()

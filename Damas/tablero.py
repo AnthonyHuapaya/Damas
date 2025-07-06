@@ -129,8 +129,23 @@ class Tablero:
         elif self.cant_blancos <= 0:
             return NEGRO
         
+        if self.cant_blancos == 1:
+            piezas_blancas = self.obtener_todas_piezas(BLANCO)
+            if not self.puede_mover(piezas_blancas[0]):
+                return NEGRO
+
+        if self.cant_negros == 1:
+            piezas_negras = self.obtener_todas_piezas(NEGRO)
+            if not self.puede_mover(piezas_negras[0]):
+                return BLANCO
+        
         return None 
     
+    def puede_mover(self, pieza):
+        movimientos = self.obtener_mov_validos(pieza)
+        return len(movimientos) > 0
+
+
     def obtener_mov_validos(self, pieza):
         movimientos = {}
         izq = pieza.columna - 1
