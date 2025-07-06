@@ -28,6 +28,7 @@ def pantalla_inicio(juego_iniciado):
 
     def boton_exit_evento():
         pygame.quit()
+        exit()
 
     boton_exit = Boton("assets/exit_button.png", (ANCHO_P_VENTANA // 2, 620), boton_exit_evento)
 
@@ -49,6 +50,7 @@ def pantalla_ganaste():
 
     def boton_exit_evento():
         pygame.quit()
+        exit()
 
     boton_exit = Boton("assets/exit_button.png", (ANCHO_P_VENTANA // 2, 510), boton_exit_evento)
 
@@ -67,6 +69,7 @@ def pantalla_perdiste():
 
     def boton_exit_evento():
         pygame.quit()
+        exit()
 
     boton_exit = Boton("assets/exit_button.png", (ANCHO_P_VENTANA // 2, 510), boton_exit_evento)
 
