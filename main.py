@@ -1,21 +1,21 @@
 import pygame
 from Damas.const import ANCHO_P_VENTANA, ALTO_P_VENTANA, TAM_CASILLERO, NEGRO, BLANCO, FUENTE_PANTALLA_PRINCIPAL, FONDO_PANTALLA, ANCHO_P, FONDO_PANTALLA_WINNER, FONDO_PANTALLA_GAME_OVER
 from Damas.juego import Juego
-from minimax.Algoritmo import minimax
 from Damas.boton import Boton
+from Damas.arbol import Nodo
+from Damas.arbol import Arbol
+from minimax.Algoritmo import minimax_nodo
 
 FPS = 60
 
 VENTANA = pygame.display.set_mode((ANCHO_P_VENTANA, ALTO_P_VENTANA))
 pygame.display.set_caption('DAMAS')
 
-
 def obtener_fila_columna_mouse(pos):
     x, y = pos
     fila = y // TAM_CASILLERO
     columna = x // TAM_CASILLERO
     return fila, columna
-
 
 def pantalla_inicio(juego_iniciado):
     texto = FUENTE_PANTALLA_PRINCIPAL.render("DAMAS", True, BLANCO)
@@ -47,7 +47,6 @@ def pantalla_inicio(juego_iniciado):
             boton_exit.manejar_evento(evento)
 
 def pantalla_ganaste():
-
     def boton_exit_evento():
         pygame.quit()
         exit()
@@ -64,9 +63,8 @@ def pantalla_ganaste():
                 pygame.quit()
                 exit()
             boton_exit.manejar_evento(evento)
-        
-def pantalla_perdiste():
 
+def pantalla_perdiste():
     def boton_exit_evento():
         pygame.quit()
         exit()
@@ -87,7 +85,7 @@ def pantalla_perdiste():
 def iniciar_partida(juego_iniciado):
     reloj = pygame.time.Clock()
     juego = Juego(VENTANA)
-    prof = 2
+    prof = 2  
 
     def boton_back_evento():
         juego_iniciado[0] = False
@@ -96,23 +94,30 @@ def iniciar_partida(juego_iniciado):
 
     while juego_iniciado[0]:
         reloj.tick(FPS)
-        
-        if juego.turno == BLANCO:
-            valor, nuevo_tablero = minimax(juego.obtener_tablero(), prof, BLANCO, juego)
-            juego.mov_ia(nuevo_tablero)
 
-        if juego.ganador() != None:
-            print(juego.ganador())
+        if juego.ganador() is not None:
             if juego.ganador() == NEGRO:
                 pantalla_ganaste()
             else:
                 pantalla_perdiste()
             juego_iniciado[0] = False
 
+        if juego.turno == BLANCO:
+            raiz = Nodo(juego.obtener_tablero(), turno_max=True)
+            arbol = Arbol(raiz)
+
+            valor = minimax_nodo(raiz, prof, juego)
+
+            mejor_hijo = max(raiz.hijos, key=lambda n: n.evaluacion)
+            juego.mov_ia(mejor_hijo.estado)
+
+            # imprimir el arbol
+            arbol.recorrer()
+
         for evento in pygame.event.get():
             if evento.type == pygame.QUIT:
                 juego_iniciado[0] = False
-            
+
             if evento.type == pygame.MOUSEBUTTONDOWN:
                 pos = pygame.mouse.get_pos()
                 x, y = pos
@@ -123,17 +128,12 @@ def iniciar_partida(juego_iniciado):
             boton_back.manejar_evento(evento)
 
         juego.actualizar()
-    
-    # pygame.quit()
 
 def main():
     juego_iniciado = [False]
-    programa_levantado = True
 
-    while programa_levantado:
+    while True:
         pantalla_inicio(juego_iniciado)
         iniciar_partida(juego_iniciado)
 
-
 main()
-

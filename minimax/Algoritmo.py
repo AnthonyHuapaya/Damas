@@ -1,33 +1,37 @@
 from copy import deepcopy
+from Damas.arbol import Nodo
 import pygame
 
 BLANCO = (255, 255, 255)
-NEGRO = (0, 0, 0) 
+NEGRO = (0, 0, 0)     
 
-def minimax(posicion, prof, jugador_max, juego):
-    if prof == 0 or posicion.ganador() != None:
-        return posicion.evaluar(), posicion
-    
-    if jugador_max:
+def minimax_nodo(nodo, prof, juego):
+    if prof == 0 or nodo.estado.ganador() is not None:
+        nodo.evaluacion = nodo.estado.evaluar()
+        return nodo.evaluacion
+
+    if nodo.turno_max:
         maxEval = float('-inf')
-        mejor_mov = None
-        for mov in obtener_todos_movimientos(posicion, BLANCO, juego):
-            evaluacion = minimax(mov, prof-1, False, juego)[0]
-            maxEval = max(maxEval, evaluacion)
-            if maxEval == evaluacion:
-                mejor_mov = mov
-        return maxEval, mejor_mov
+        for mov in obtener_todos_movimientos(nodo.estado, BLANCO, juego):
+            hijo = Nodo(mov, turno_max=False, padre=nodo)
+            nodo.agregar_hijo(hijo)
+            evaluacion = minimax_nodo(hijo, prof-1, juego)
+            if evaluacion > maxEval:
+                maxEval = evaluacion
+                nodo.evaluacion = maxEval
     else:
-        
         minEval = float('inf')
-        mejor_mov = None
-        for mov in obtener_todos_movimientos(posicion, NEGRO, juego):
-            evaluacion = minimax(mov, prof-1, True, juego)[0]
-            minEval = min(minEval, evaluacion)
-            if minEval == evaluacion:
-                mejor_mov = mov
-        return minEval, mejor_mov
-    
+        for mov in obtener_todos_movimientos(nodo.estado, NEGRO, juego):
+            hijo = Nodo(mov, turno_max=True, padre=nodo)
+            nodo.agregar_hijo(hijo)
+            evaluacion = minimax_nodo(hijo, prof-1, juego)
+            if evaluacion < minEval:
+                minEval = evaluacion
+                nodo.evaluacion = minEval
+
+    return nodo.evaluacion
+
+
 def simular_mov(pieza, mov, tablero, juego, salto):
     tablero.mover(pieza, mov[0], mov[1])
     if salto:
